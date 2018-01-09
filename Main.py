@@ -47,6 +47,7 @@ def displayJoinMatrix(joinMatrix):
     print("----------------")
     print("*2*| "+d+" | "+e+" | "+f+" |")
     print("----------------")
+    print("")
 
 
 def switchOutputValuesInJoinMatrix(joinMatrix, permutation):
@@ -79,20 +80,58 @@ def switchInputValuesInJoinMatrix(joinMatrix, permutation):
 
 
 totalJoinMatricesAtStart = pow(4, 6)
-relevantJoinMatrices = set(range(0, totalJoinMatricesAtStart))
-newRelevantJoinMatrices = set()
+equivalenceClasses = []
+for i in range(0,totalJoinMatricesAtStart):
+    equivalenceClasses.append({i})
+newEquivalenceClasses = []
+toSkip = []
+
+
+def findEquivalenceClassIndexWithElement(eqClasses, element):
+    for classIndex, eqClass in enumerate(eqClasses):
+        if element in eqClass:
+            return classIndex
+
 
 # Equivalency on output
-for p, perm in enumerate(permutations):
-    for matrix in relevantJoinMatrices:
-        equivalentMatrix = switchOutputValuesInJoinMatrix(matrix, permutations[p])
-        if matrix <= equivalentMatrix:
-            newRelevantJoinMatrices.add(matrix)
-    relevantJoinMatrices = newRelevantJoinMatrices
-    newRelevantJoinMatrices = set()
+for permutationIndex in range(1, 6):
+    for index, eqC in enumerate(equivalenceClasses):
+        if index not in toSkip:
+            eqClassToAdd = set()
+            representative = next(iter(eqC))
+            eqJM = switchOutputValuesInJoinMatrix(representative, permutations[permutationIndex])
+            eqJMIndex = findEquivalenceClassIndexWithElement(equivalenceClasses, eqJM)
+            if index != eqJMIndex:
+                eqClassToAdd = eqC.union(equivalenceClasses[eqJMIndex])
+                toSkip.append(eqJMIndex)
+            else:
+                eqClassToAdd = eqC
+            newEquivalenceClasses.append(eqClassToAdd)
+    equivalenceClasses = newEquivalenceClasses
+    newEquivalenceClasses = []
+    toSkip = []
 
-#for rjm in relevantJoinMatrices
-#    displayJoinMatrix(rjm)
+# Equivalency on input
+for permutationIndex in range(1, 6):
+    for index, eqC in enumerate(equivalenceClasses):
+        if index not in toSkip:
+            eqClassToAdd = set()
+            representative = next(iter(eqC))
+            eqJM = switchInputValuesInJoinMatrix(representative, permutations[permutationIndex])
+            eqJMIndex = findEquivalenceClassIndexWithElement(equivalenceClasses, eqJM)
+            if index != eqJMIndex:
+                eqClassToAdd = eqC.union(equivalenceClasses[eqJMIndex])
+                toSkip.append(eqJMIndex)
+            else:
+                eqClassToAdd = eqC
+            newEquivalenceClasses.append(eqClassToAdd)
+    equivalenceClasses = newEquivalenceClasses
+    newEquivalenceClasses = []
+    toSkip = []
+
+for eqC in equivalenceClasses:
+    representative = next(iter(eqC))
+    displayJoinMatrix(representative)
 
 # ---Output--- #
-print("Number of matrices: " + str(len(relevantJoinMatrices)))
+print("Number of matrices: " + str(len(equivalenceClasses)))
