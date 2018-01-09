@@ -1,5 +1,13 @@
 import BitOperations
 
+permutations = {
+    0: [0, 1, 2],
+    1: [0, 2, 1],
+    2: [1, 0, 2],
+    3: [1, 2, 0],
+    4: [2, 0, 1],
+    5: [2, 1, 0]
+}
 
 def internalStateToDisplayState(internalState):
     displayState = {
@@ -28,9 +36,9 @@ def displayJoinMatrix(joinMatrix):
     print("----------------")
 
 
-def switchOutputValuesInJoinMatrix(joinMatrix, spot0, spot1, spot2):
+def switchOutputValuesInJoinMatrix(joinMatrix, permutation):
     newJoinMatrix = 0
-    permutation = [spot0, spot1, spot2, 3]
+    permutation.extend([3])
     for i in range(0, 6):
         digitInOriginalJoinMatrix = BitOperations.getDigitAtPlace(joinMatrix, i)
         newDigit = permutation[digitInOriginalJoinMatrix]
@@ -38,8 +46,26 @@ def switchOutputValuesInJoinMatrix(joinMatrix, spot0, spot1, spot2):
     return newJoinMatrix
 
 
+def switchInputValuesInJoinMatrix(joinMatrix, permutation):
+    newJoinMatrix = 0
+    digits = BitOperations.getAllDigits(joinMatrix)
+
+
 totalJoinMatricesAtStart = pow(4, 6)
 relevantJoinMatrices = set(range(0, totalJoinMatricesAtStart))
+newRelevantJoinMatrices = set()
+
+# Equivalency on output
+for p, perm in enumerate(permutations):
+    for matrix in relevantJoinMatrices:
+        equivalentMatrix = switchOutputValuesInJoinMatrix(matrix, permutations[p])
+        if matrix <= equivalentMatrix:
+            newRelevantJoinMatrices.add(matrix)
+    relevantJoinMatrices = newRelevantJoinMatrices
+    newRelevantJoinMatrices = set()
+
+for rjm in relevantJoinMatrices:
+    displayJoinMatrix(rjm)
 
 # ---Output--- #
 print("Number of matrices: " + str(len(relevantJoinMatrices)))
