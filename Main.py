@@ -32,7 +32,7 @@ def internalStateToDisplayState(internalState):
 
 
 def displayJoinMatrix(joinMatrix):
-    digits = BitOperations.getAllDigits(joinMatrix)
+    digits = BitOperations.getAllDigitsQ(joinMatrix)
     a = internalStateToDisplayState(digits[0])
     b = internalStateToDisplayState(digits[1])
     c = internalStateToDisplayState(digits[2])
@@ -61,7 +61,7 @@ def switchOutputValuesInJoinMatrix(joinMatrix, permutation):
     newJoinMatrix = 0
     permutation.extend([3])
     for i in range(0, 6):
-        digitInOriginalJoinMatrix = BitOperations.getDigitAtPlace(joinMatrix, i)
+        digitInOriginalJoinMatrix = BitOperations.getDigitAtPlaceQ(joinMatrix, i)
         newDigit = permutation[digitInOriginalJoinMatrix]
         newJoinMatrix += newDigit * pow(4, i)
     return newJoinMatrix
@@ -70,7 +70,7 @@ def switchOutputValuesInJoinMatrix(joinMatrix, permutation):
 def switchInputValuesInJoinMatrix(joinMatrix, permutation):
     global joinsDictionaryByIndex, joinsDictionaryByJoin
     newJoinMatrix = 0
-    digits = BitOperations.getAllDigits(joinMatrix)
+    digits = BitOperations.getAllDigitsQ(joinMatrix)
     newDigits = [-1, -1, -1, -1, -1, -1]
     for i in range(0, 6):
         joinToTranslate = joinsDictionaryByIndex[i]

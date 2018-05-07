@@ -1,17 +1,28 @@
 def bitShiftLeft(number, times):
-    return number << (2 * times)
+    return number << times
 
 
 def bitShiftRight(number, times):
-    return number >> (2 * times)
+    return number >> times
+
+# Quaternary
+def getDigitAtPlaceQ(number, place):
+    return bitShiftRight(number, place * 2) % 4
 
 
-def getDigitAtPlace(number, place):
-    return bitShiftRight(number, place) % 4
-
-
-def getAllDigits(number):
+def getAllDigitsQ(number):
     resultList = []
     for i in range(0, 6):
-        resultList.append(getDigitAtPlace(number, i))
+        resultList.append(getDigitAtPlaceQ(number, i))
+    return resultList
+
+# Binary
+def getDigitAtPlaceB(number, place):
+    return bitShiftRight(number, place) % 2
+
+
+def getAllDigitsB(number):
+    resultList = []
+    for i in range(0, 6):
+        resultList.append(getDigitAtPlaceB(number, i))
     return resultList
